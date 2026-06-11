@@ -28,7 +28,7 @@ cat << 'EOF'
  ╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝    ╚══════╝╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝
 
           Full Recon & Vulnerability Scanner — Linux Edition
-          For AUTHORIZED security testing / bug bounty only!
+          For AUTHORIZED security testing / bug bounty only!   By-- VTRAP
 EOF
 }
 
