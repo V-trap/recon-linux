@@ -28,7 +28,7 @@ cat << 'EOF'
  ╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝    ╚══════╝╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝
 
           Full Recon & Vulnerability Scanner — Linux Edition
-          For AUTHORIZED security testing / bug bounty only!   By-- VTRAP
+          For AUTHORIZED security testing / bug bounty only!
 EOF
 }
 
@@ -50,6 +50,7 @@ RESOLVERS="/tmp/resolvers.txt"
 INSTALL_MISSING=false
 SKIP_HEAVY=false       # skip nmap, amass, sqlmap (slow)
 SKIP_FUZZ=false
+SKIP_JS=false          # skip JS file discovery & endpoint mining (phase 4)
 OUT_DIR="./recon_results"
 DOMAIN=""
 LINKFINDER_DIR="$HOME/tools/LinkFinder"
@@ -65,11 +66,13 @@ usage() {
   echo "  --install           Auto-install missing Go tools"
   echo "  --skip-heavy        Skip slow tools: nmap, amass, sqlmap"
   echo "  --skip-fuzz         Skip directory fuzzing (ffuf)"
+  echo "  --skip-js           Skip JS file discovery & endpoint mining (phase 4)"
   echo "  -h                  Show this help"
   echo ""
   echo "Examples:"
   echo "  bash recon_linux.sh -d example.com"
   echo "  bash recon_linux.sh -d example.com --install --skip-heavy"
+  echo "  bash recon_linux.sh -d example.com --skip-js --skip-fuzz"
   exit 0
 }
 
@@ -82,6 +85,7 @@ while [[ $# -gt 0 ]]; do
     --install)     INSTALL_MISSING=true; shift ;;
     --skip-heavy)  SKIP_HEAVY=true;      shift ;;
     --skip-fuzz)   SKIP_FUZZ=true;       shift ;;
+    --skip-js)     SKIP_JS=true;         shift ;;
     -h|--help)     usage ;;
     *)   error "Unknown option: $1"; usage ;;
   esac
@@ -544,6 +548,12 @@ phase3_urls() {
 # ═══════════════════════════════════════════════════════════
 phase4_js() {
   phase "PHASE 4 — JS File Discovery & Endpoint Mining"
+
+  if $SKIP_JS; then
+    warn "Skipping JS discovery (--skip-js)"
+    return 0
+  fi
+
   local js_dir="$OUT/js"
   local live_urls="$OUT/live_urls.txt"
   local all_urls="$OUT/urls/all_urls.txt"
